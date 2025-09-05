@@ -74,3 +74,24 @@ If it isn't present, open an elevated PowerShell prompt, then run the following 
   New-Item -Path $registryPath
   New-ItemProperty -Path $registryPath -Name Version -PropertyType String -Value "6.0"
   ```
+
+
+
+
+**Issue:** If the servers in RD deployment has been upgraded in the past from a previous windows installation (for instance Windows Server 2008 R2/Windows Server 2012/Windows Server 2012 R2), after upgrade Server Manager can report problems as:
+- Error with error code 14 occurred while calling method WSManPluginReceiveResult
+- The Maximum number of concurrent Shells for the Remote Desktop Services plug-in has been exceeded.Restart Server Manager and then try again.
+- Object not set to an instance of an object while managing certificates for a deployment
+
+**Workaround:** Please check the setting of MaxEnvelopeSizeKb parameter:
+
+```powershell
+Get-Item -Path WSMan:\localhost\MaxEnvelopeSizeKb
+```
+
+Default value for current Windows Server is 500. Default value for older Windows Server was 150. Don't set the value too high, make sure, that the value is at least 500.
+
+To set it to the default value for current Windows Server, use the command provided below:
+  ```powershell
+  Set-Item -Path WSMan:\localhost\MaxEnvelopeSizeKb 500
+  ```
